@@ -3,7 +3,6 @@
     <header>
       <!-- TODO icon pembeda -->
       <NuxtLink to="/list">list</NuxtLink>
-      <NuxtLink to="/pinjam">pinjam</NuxtLink>
       <NuxtLink to="/history">riwayat</NuxtLink>
     </header>
     <NuxtPage />

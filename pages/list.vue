@@ -13,10 +13,38 @@ const onSnap = (id:string)=>(d:DocumentSnapshot)=>{
   }
 }
 
-const pinjam_nama = ref(''), pinjam_buku = ref('')
+const peminjam = ref(''), buku = ref('')
 
 import {generate} from 'lean-qr';
 import { StyleValue } from "vue";
+function yey(ev:KeyboardEvent){
+  if(ev.key=="Enter")ye();
+}
+function ye(){
+  if(peminjam.value&&buku.value){
+    const dbQuery = query(
+                      collection(db,'peminjaman'),
+                      where('peminjam','==',peminjam.value),
+                      where('kembali','==',null)
+                    );
+    getDocs(dbQuery).then((docs)=>{
+      if(!docs.empty){
+        alert('anda masih pinjem cuy');
+        navigateTo('/list');
+      }else if(qrcanv.value!=undefined){
+        const snap = onSnapshot(dbQuery,(qsnap)=>{
+          if(qsnap.docs.length==1){
+            snap();
+            //alert(qsnap.docs[0].id);
+            alert(`Peminjaman terdaftar\n${peminjam.value}\n${buku.value}`)
+            navigateTo('/list');
+          }
+        });
+        generate(`BUKU:p,${peminjam.value},${buku.value}`).toCanvas(qrcanv.value);
+      }
+    });
+  }
+};
 const panjang = (id:string)=>{
   if(snap)snap();
   if(qrcanv.value!=undefined){
@@ -32,7 +60,6 @@ const kembali = (id:string)=>{
   }
 }
 
-import { ref } from "vue";
 const qrcanv = ref<HTMLCanvasElement>();
 const alldocs = ref((await getDocs(
                             query(
@@ -124,11 +151,11 @@ function isTelat(waktu:Date){
           <tr>
             <!-- TODO: implementasi /pinjam pindah sini -->
             <!--td id="baru" colspan="5"><NuxtLink to="/pinjam"><button>+ pinjam</button></NuxtLink></td-->
-            <td><input v-model="pinjam_nama"></td>
-            <td><input v-model="pinjam_buku"></td>
+            <td><input v-model="peminjam" @keydown="yey"></td>
+            <td><input v-model="buku" @keydown="yey"></td>
             <td class="waktu" :style="deadlineBalik(Timestamp.now())">{{ tulisanTgl(new Date()) }}</td>
             <td class="telat" :style="deadlineBalik(Timestamp.now())"></td>
-            <td id="baru"><NuxtLink :to="`/pinjam${pinjam_nama||pinjam_buku?'?':''}${pinjam_nama?'nama=':''}${pinjam_nama}${pinjam_nama&&pinjam_buku?'&':''}${pinjam_buku?'buku=':''}${pinjam_buku}`"><button>+</button></NuxtLink></td>
+            <td id="baru"><button @click="ye">+</button></td>
           </tr>
           <tr v-for="doc in alldocs">
             <td class="nama">{{ doc.data.peminjam }}</td>
