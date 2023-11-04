@@ -13,6 +13,8 @@ const onSnap = (id:string)=>(d:DocumentSnapshot)=>{
   }
 }
 
+const pinjam_nama = ref(''), pinjam_buku = ref('')
+
 import {generate} from 'lean-qr';
 import { StyleValue } from "vue";
 const panjang = (id:string)=>{
@@ -121,7 +123,12 @@ function isTelat(waktu:Date){
         <tbody>
           <tr>
             <!-- TODO: implementasi /pinjam pindah sini -->
-            <td id="baru" colspan="5"><NuxtLink to="/pinjam"><button>+ pinjam</button></NuxtLink></td>
+            <!--td id="baru" colspan="5"><NuxtLink to="/pinjam"><button>+ pinjam</button></NuxtLink></td-->
+            <td><input v-model="pinjam_nama"></td>
+            <td><input v-model="pinjam_buku"></td>
+            <td class="waktu" :style="deadlineBalik(Timestamp.now())">{{ tulisanTgl(new Date()) }}</td>
+            <td class="telat" :style="deadlineBalik(Timestamp.now())"></td>
+            <td id="baru"><NuxtLink :to="`/pinjam${pinjam_nama||pinjam_buku?'?':''}${pinjam_nama?'nama=':''}${pinjam_nama}${pinjam_nama&&pinjam_buku?'&':''}${pinjam_buku?'buku=':''}${pinjam_buku}`"><button>+</button></NuxtLink></td>
           </tr>
           <tr v-for="doc in alldocs">
             <td class="nama">{{ doc.data.peminjam }}</td>
@@ -132,7 +139,7 @@ function isTelat(waktu:Date){
           </tr>
         </tbody>
       </table>
-      <span class="note">note: + perpanjang, v kembalikan</span>
+      <span class="note">note: + pinjam (lagi), v kembalikan</span>
     </div>
     <div id="qr">
       <canvas ref="qrcanv"></canvas>
