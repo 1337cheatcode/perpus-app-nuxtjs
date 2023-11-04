@@ -4,8 +4,6 @@ import { getFirestore, onSnapshot, collection, query, where, getDocs } from "fir
 
 import { generate } from "lean-qr";
 
-import { ref } from 'vue';
-
 const qs = useRoute().query,
       peminjam = ref(qs.nama?qs.nama:''),
       buku = ref(qs.buku?qs.buku:''),
