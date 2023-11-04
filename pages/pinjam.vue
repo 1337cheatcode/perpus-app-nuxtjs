@@ -11,7 +11,7 @@ const qs = useRoute().query,
       buku = ref(qs.buku?qs.buku:''),
       qr = ref(''),
       qrcanv = ref<HTMLCanvasElement>(),
-      urlPusher = useRouter().push;
+      urlPusher = useRouter().replace;
 
 function yey(ev:KeyboardEvent){
   if(ev.key=="Enter")ye();
