@@ -19,14 +19,14 @@ const panjang = (id:string)=>{
   if(snap)snap();
   if(qrcanv.value!=undefined){
     snap = onSnapshot(doc(db,'peminjaman',id),onSnap(id));
-    return generate(`x,${id}`).toCanvas(qrcanv.value);
+    return generate(`BUKU:x,${id}`).toCanvas(qrcanv.value);
   }
 }
 const kembali = (id:string)=>{
   if(snap)snap();
   if(qrcanv.value!=undefined){
     snap = onSnapshot(doc(db,'peminjaman',id),onSnap(id));
-    return generate(`k,${id}`).toCanvas(qrcanv.value);
+    return generate(`BUKU:k,${id}`).toCanvas(qrcanv.value);
   }
 }
 
@@ -120,6 +120,7 @@ function isTelat(waktu:Date){
         </thead>
         <tbody>
           <tr>
+            <!-- TODO: implementasi /pinjam pindah sini -->
             <td id="baru" colspan="5"><NuxtLink to="/pinjam"><button>+ pinjam</button></NuxtLink></td>
           </tr>
           <tr v-for="doc in alldocs">

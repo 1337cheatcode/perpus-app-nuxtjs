@@ -38,7 +38,7 @@ function ye(){
             navigateTo('/list');
           }
         });
-        generate(qr.value=`p,${peminjam.value},${buku.value}`).toCanvas(qrcanv.value);
+        generate(qr.value=`BUKU:p,${peminjam.value},${buku.value}`).toCanvas(qrcanv.value);
       }
     });
   }

@@ -49,7 +49,7 @@ onMounted(async ()=>{
   }
 
   async function storeData(res:QrScanner.ScanResult){
-    if(multiScanStopper.value)return;
+    if(multiScanStopper.value||res.data.startsWith("BUKU:"))return;
     else multiScanStopper.value=true;
     navigator.vibrate(150);
     await qrScanner.stop();
@@ -108,6 +108,8 @@ onMounted(async ()=>{
     }
   }
 });
+
+// TODO: scanner to be splitted?
 </script>
 
 <template>
