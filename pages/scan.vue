@@ -49,62 +49,64 @@ onMounted(async ()=>{
   }
 
   async function storeData(res:QrScanner.ScanResult){
-    if(multiScanStopper.value||res.data.startsWith("BUKU:"))return;
-    else multiScanStopper.value=true;
-    navigator.vibrate(150);
-    await qrScanner.stop();
-    const validRes = ()=>{
-      alert('Data terinput');
-      useRouter().back();
-    };
-    const ress = res.data.split(',');
-    switch (ress[0]) {
-      case 'p':
-        await addDoc(collection(db,'peminjaman'),{
-          peminjam:ress[1],
-          buku:ress[2],
-          pinjam:{
-            waktu:serverTimestamp(),
-            staf: 'webscan'
-          },
-          kembali:null
-        });
-        validRes();
-        break;
-      case 'x':
-        const t = await getDoc(doc(db,'peminjaman',ress[1]));
-        await addDoc(collection(db,'peminjaman'),{
-          peminjam:t.get('peminjam'),
-          buku:t.get('buku'),
-          pinjam:{
-            waktu:serverTimestamp(),
-            staf: 'webscan'
-          },
-          kembali:null
-        });
-        await updateDoc(doc(db,'peminjaman',ress[1]),{
-          kembali:{
-            waktu:serverTimestamp(),
-            staf: 'webscan'
-          }
-        });
-        validRes();
-        break;
-      case 'k':
-        await updateDoc(doc(db,'peminjaman',ress[1]),{
-          kembali:{
-            waktu:serverTimestamp(),
-            staf: 'webscan'
-          }
-        });
-        validRes();
-        break;
-      default:
-        console.log(res.data);
-        alert('try again');
-        multiScanStopper.value=false;
-        qrScanner.start();
-        break;
+    if(multiScanStopper.value)return;
+    else if(res.data.startsWith("BUKU:")){
+      multiScanStopper.value=true;
+      navigator.vibrate(150);
+      await qrScanner.stop();
+      const validRes = ()=>{
+        alert('Data terinput');
+        useRouter().back();
+      };
+      const ress = res.data.split(',');
+      switch (ress[0]) {
+        case 'p':
+          await addDoc(collection(db,'peminjaman'),{
+            peminjam:ress[1],
+            buku:ress[2],
+            pinjam:{
+              waktu:serverTimestamp(),
+              staf: 'webscan'
+            },
+            kembali:null
+          });
+          validRes();
+          break;
+        case 'x':
+          const t = await getDoc(doc(db,'peminjaman',ress[1]));
+          await addDoc(collection(db,'peminjaman'),{
+            peminjam:t.get('peminjam'),
+            buku:t.get('buku'),
+            pinjam:{
+              waktu:serverTimestamp(),
+              staf: 'webscan'
+            },
+            kembali:null
+          });
+          await updateDoc(doc(db,'peminjaman',ress[1]),{
+            kembali:{
+              waktu:serverTimestamp(),
+              staf: 'webscan'
+            }
+          });
+          validRes();
+          break;
+        case 'k':
+          await updateDoc(doc(db,'peminjaman',ress[1]),{
+            kembali:{
+              waktu:serverTimestamp(),
+              staf: 'webscan'
+            }
+          });
+          validRes();
+          break;
+        default:
+          console.log(res.data);
+          alert('try again');
+          multiScanStopper.value=false;
+          qrScanner.start();
+          break;
+      }
     }
   }
 });
