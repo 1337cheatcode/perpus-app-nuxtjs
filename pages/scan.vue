@@ -59,7 +59,7 @@ onMounted(async ()=>{
         useRouter().back();
       };
       const ress = res.data.split(',');
-      switch (ress[0]) {
+      switch (ress[0].substring(5)) {
         case 'p':
           await addDoc(collection(db,'peminjaman'),{
             peminjam:ress[1],
