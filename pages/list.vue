@@ -30,14 +30,23 @@ function ye(){
     getDocs(dbQuery).then((docs)=>{
       if(!docs.empty){
         alert('anda masih pinjem cuy');
-        navigateTo('/list');
       }else if(qrcanv.value!=undefined){
         const snap = onSnapshot(dbQuery,(qsnap)=>{
           if(qsnap.docs.length==1){
+            getDocs(
+              query(
+                collection(db, 'peminjaman'),
+                where('kembali','==',null)
+              )
+            ).then(docs=>{
+              alldocs.value=docs.docs.map((d)=>({id:d.id,data:d.data()}))
+                                     .sort((a,b)=>a.data.pinjam.waktu-b.data.pinjam.waktu);
+              peminjam.value='';
+              buku.value='';
+            });
             snap();
             //alert(qsnap.docs[0].id);
-            alert(`Peminjaman terdaftar\n${peminjam.value}\n${buku.value}`)
-            navigateTo('/list');
+            alert(`Peminjaman terdaftar\n${peminjam.value}\n${buku.value}`);
           }
         });
         generate(`BUKU:p,${peminjam.value},${buku.value}`).toCanvas(qrcanv.value);
