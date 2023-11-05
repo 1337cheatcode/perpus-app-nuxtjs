@@ -58,8 +58,8 @@ onMounted(async ()=>{
         alert('Data terinput');
         useRouter().back();
       };
-      const ress = res.data.split(',');
-      switch (ress[0].substring(5)) {
+      const ress = res.data.substring(5).split(',');
+      switch (ress[0]) {
         case 'p':
           await addDoc(collection(db,'peminjaman'),{
             peminjam:ress[1],
